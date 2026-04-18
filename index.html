@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jen Tech - Secure Download</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI, sans-serif;}
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#3a0ca3,#7209b7,#f72585);
+  color:#fff;
+}
+.card{
+  width:92%;
+  max-width:430px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  padding:40px 25px;
+  text-align:center;
+  box-shadow:0 15px 35px rgba(0,0,0,.4);
+}
+h1{font-size:30px;margin-bottom:8px;}
+p{opacity:.9;font-size:14px;margin-bottom:25px;}
+button{
+  border:none;
+  padding:14px 28px;
+  border-radius:50px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(to right,#ff006e,#8338ec);
+  color:#fff;
+  width:100%;
+  transition:.3s;
+}
+button:hover{transform:scale(1.05);}
+.hidden{display:none;}
+.counter{
+  font-size:22px;
+  margin:20px 0;
+  color:#ffd6ff;
+}
+.small{font-size:13px;opacity:.8;margin-top:20px;}
+
+.codebox{
+  margin-top:20px;
+  background:#1a1a1a;
+  padding:15px;
+  border-radius:10px;
+  font-family:monospace;
+  font-size:13px;
+  word-break:break-all;
+  opacity:0;
+  transform:translateY(25px) scale(0.95);
+  transition:all .7s ease;
+}
+.codebox.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="mainCard">
+  <h1>Jen Tech</h1>
+  <p>Fast • Secure • Reliable Downloads</p>
+  <button id="downloadBtn">⬇ Download Now</button>
+  <div class="small">Secure verification required</div>
+</div>
+
+<div class="card hidden" id="loading1">
+  <h1>Loading...</h1>
+  <div class="counter" id="count10">10</div>
+  <p>Please wait while we prepare your download</p>
+</div>
+
+<div class="card hidden" id="verify">
+  <h1>Verify Human Activity</h1>
+  <p>Click the button <b>10 times</b></p>
+  <div class="counter">Clicks: <span id="clicks">0</span>/10</div>
+  <button onclick="countClicks()">Click Me</button>
+</div>
+
+<div class="card hidden" id="loading2">
+  <h1>Finalizing...</h1>
+  <div class="counter" id="count15">15s</div>
+  <p>Your content is being prepared</p>
+</div>
+
+<div class="card hidden" id="finalPage">
+  <h1>Copy the Script</h1>
+  <p>Click copy and use it</p>
+
+  <div id="codeBox" class="codebox">
+loadstring(game:HttpGet("https://pastefy.app/ZeMnO9Dj/raw"))()
+  </div>
+
+  <button id="copyBtn" style="margin-top:15px;">Copy Text</button>
+</div>
+
+<script>
+let clickCount = 0;
+
+document.getElementById("downloadBtn").addEventListener("click", startStep1);
+document.getElementById("copyBtn").addEventListener("click", copyText);
+
+function show(id){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function startStep1(){
+  show('loading1');
+  let time = 10;
+  const el = document.getElementById('count10');
+  const timer = setInterval(()=>{
+    time--;
+    el.textContent = time;
+    if(time<=0){
+      clearInterval(timer);
+      show('verify');
+    }
+  },1000);
+}
+
+function countClicks(){
+  clickCount++;
+  document.getElementById('clicks').textContent = clickCount;
+  if(clickCount>=10){
+    startStep2();
+  }
+}
+
+function startStep2(){
+  show('loading2');
+  let time = 15;
+  const el = document.getElementById('count15');
+  const timer = setInterval(()=>{
+    time--;
+    el.textContent = time + "s";
+    if(time<=0){
+      clearInterval(timer);
+      showFinal();
+    }
+  },1000);
+}
+
+function showFinal(){
+  show('finalPage');
+  setTimeout(()=>{
+    document.getElementById('codeBox').classList.add('show');
+  },300);
+}
+
+function copyText(){
+  const text = document.getElementById('codeBox').innerText;
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(()=>{
+      document.getElementById('copyBtn').innerText = "Copied!";
+    });
+  } else {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    document.getElementById('copyBtn').innerText = "Copied!";
+  }
+}
+</script>
+
+</body>
+</html>
